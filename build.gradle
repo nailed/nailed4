@@ -19,8 +19,16 @@ repositories {
     }
 }
 
+configurations {
+    provided
+}
+sourceSets.main.compileClasspath += configurations.provided
+
 dependencies {
     compile "org.spongepowered:spongeapi:1.1-SNAPSHOT"
+
+    provided "com.google.code.gson:gson:2.3"
+    provided "org.apache.httpcomponents:httpclient:4.3.3"
 }
 
 checkstyle {
@@ -48,5 +56,11 @@ license {
     strictCheck true
     mapping {
         java = 'SLASHSTAR_STYLE'
+    }
+}
+
+idea {
+    module {
+        scopes.COMPILE.plus += [configurations.provided]
     }
 }

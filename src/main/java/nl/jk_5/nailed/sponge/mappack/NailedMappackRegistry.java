@@ -33,6 +33,7 @@ import nl.jk_5.nailed.api.mappack.Mappack;
 import nl.jk_5.nailed.api.mappack.MappackRegistry;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 @NonnullByDefault
@@ -54,12 +55,12 @@ public class NailedMappackRegistry implements MappackRegistry {
 
     @Override
     public Collection<Mappack> getMappacks() {
-        return null;
+        return Collections.unmodifiableCollection(this.mappacks.values());
     }
 
     @Override
     public Optional<Mappack> getByName(String name) {
-        return null;
+        return Optional.fromNullable(this.mappacks.get(name));
     }
 
     @Override

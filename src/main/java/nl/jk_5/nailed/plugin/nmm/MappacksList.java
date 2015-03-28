@@ -22,19 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package nl.jk_5.nailed.api.mappack;
+package nl.jk_5.nailed.plugin.nmm;
 
-import com.google.common.util.concurrent.SettableFuture;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
+public class MappacksList {
 
-import java.io.File;
-
-@NonnullByDefault
-public interface Mappack {
-
-    String getName();
-
-    //MappackMetadata getMetadata(); //TODO metadata
-
-    void prepareWorld(File destination, SettableFuture<Void> future);
+    public String[] mappacks;
 }
