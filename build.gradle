@@ -26,6 +26,9 @@ sourceSets.main.compileClasspath += configurations.provided
 
 dependencies {
     compile "org.spongepowered:spongeapi:1.1-SNAPSHOT"
+    compile 'org.postgresql:postgresql:9.4-1201-jdbc41'
+    compile 'org.javassist:javassist:3.19.0-GA'
+    compile 'org.xerial:sqlite-jdbc:3.8.7'
 
     provided "com.google.code.gson:gson:2.3"
     provided "org.apache.httpcomponents:httpclient:4.3.3"

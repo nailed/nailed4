@@ -27,20 +27,28 @@ package nl.jk_5.nailed.sponge;
 import com.google.inject.Inject;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.postgresql.Driver;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.event.state.InitializationEvent;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.api.service.sql.SqlService;
 import org.spongepowered.api.util.event.Subscribe;
+import org.sqlite.JDBC;
 
 import nl.jk_5.nailed.api.mappack.MappackRegistry;
 import nl.jk_5.nailed.sponge.mappack.NailedMappackRegistry;
+import nl.jk_5.nailed.sponge.player.PlayerTracker;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import javax.sql.DataSource;
 
 @Plugin(id = "nailed", name = "Nailed", version = "4.0.0")
 public class Nailed {
@@ -62,6 +70,11 @@ public class Nailed {
     @Inject
     private EventManager eventManager;
 
+    private PlayerTracker playerTracker;
+    private SqlService sqlService;
+
+    private String sqlConnectorUrl;
+
     @Subscribe
     public void initialization(PreInitializationEvent event) {
         readConfig();
@@ -72,6 +85,20 @@ public class Nailed {
         } catch (ProviderExistsException e) {
             this.logger.error("Was not able to set the MappackLoader service");
         }
+
+        try {
+            DriverManager.registerDriver(new JDBC());
+            DriverManager.registerDriver(new Driver());
+        } catch (SQLException e) {
+            this.logger.error("Was not able to load sql drivers");
+        }
+
+        this.playerTracker = new PlayerTracker(this);
+    }
+
+    @Subscribe
+    public void initialization(InitializationEvent event) {
+        this.sqlService = this.game.getServiceManager().provide(SqlService.class).get();
     }
 
     private void readConfig() {
@@ -81,11 +108,11 @@ public class Nailed {
                 this.defaultConfig.createNewFile();
                 config = this.configManager.load();
                 config.setComment("Nailed base configuration");
-                CommentedConfigurationNode mapLoader = config.getNode("mapLoader");
-                mapLoader.setComment("MapLoader configuration");
-                CommentedConfigurationNode lobbyMappack = mapLoader.getNode("lobbyMappack");
-                lobbyMappack.setComment("The mappack for the lobby map");
-                lobbyMappack.setValue("nailed/lobby");
+                CommentedConfigurationNode sql = config.getNode("sql");
+                sql.setComment("SQL connector configuration");
+                CommentedConfigurationNode connector = sql.getNode("connector");
+                connector.setComment("The sql connector url");
+                connector.setValue("jdbc:h2:nailed.db");
                 this.configManager.save(config);
             }
             config = this.configManager.load();
@@ -94,7 +121,7 @@ public class Nailed {
             return;
         }
 
-        this.logger.info(config.getNode("mapLoader", "lobbyMappack").getString("nailed/lobby"));
+        this.sqlConnectorUrl = config.getNode("sql", "connector").getString("jdbc:h2:nailed.db");
     }
 
     public EventManager getEventManager() {
@@ -107,5 +134,9 @@ public class Nailed {
 
     public Logger getLogger() {
         return this.logger;
+    }
+
+    public DataSource getDataSource() throws SQLException {
+        return this.sqlService.getDataSource(this.sqlConnectorUrl);
     }
 }
