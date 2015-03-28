@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package nl.jk_5.nailed.sponge.mappack;
+package nl.jk_5.nailed.sponge;
 
 import com.google.inject.Inject;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -37,6 +37,7 @@ import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.event.Subscribe;
 
 import nl.jk_5.nailed.api.mappack.MappackRegistry;
+import nl.jk_5.nailed.sponge.mappack.NailedMappackRegistry;
 
 import java.io.File;
 import java.io.IOException;

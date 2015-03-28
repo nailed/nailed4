@@ -31,6 +31,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 import nl.jk_5.nailed.api.event.mappack.LoadMappacksEvent;
 import nl.jk_5.nailed.api.mappack.Mappack;
 import nl.jk_5.nailed.api.mappack.MappackRegistry;
+import nl.jk_5.nailed.sponge.Nailed;
 
 import java.util.Collection;
 import java.util.Collections;
